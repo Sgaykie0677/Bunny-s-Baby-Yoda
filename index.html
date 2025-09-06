@@ -535,7 +535,7 @@
                 { english: "Cat", french: "Chat", image: "https://cdn.pixabay.com/photo/2014/03/29/09/17/cat-300572_1280.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
                 { english: "Dog", french: "Chien", image: "https://cdn.pixabay.com/photo/2016/12/13/05/15/dog-1903328_1280.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
                 { english: "Book", french: "Livre", image: "https://cdn.pixabay.com/photo/2016/09/24/09/41/book-1692291_1280.jpg", options: ["Chat", "Livre", "Pomme", "Maison"] },
-                { english: "A special gift", french: "MiMi", image: "uploaded:20250906_114511.jpg-e3078797-7ee4-4737-a383-2ea438e6834f", options: ["Chien", "Maison", "Pomme", "MiMi"] },
+                { english: "A special gift", french: "MiMi", image: "https://imagedelivery.net/9sJ_6J9z-v153hE-T1_2pQ/9b33a598-a573-45ab-d72b-8713a26a3100/public", options: ["Chien", "Maison", "Pomme", "MiMi"] },
                 { english: "Apple", french: "Pomme", image: "https://cdn.pixabay.com/photo/2017/09/26/13/20/apple-2789128_1280.jpg", options: ["Pomme", "Chat", "Maison", "Chien"] },
                 { english: "Car", french: "Voiture", image: "https://cdn.pixabay.com/photo/2016/11/18/16/06/car-1836069_1280.jpg", options: ["Voiture", "Bus", "Maison", "Livre"] }
             ];
@@ -605,7 +605,11 @@
             }
 
             sayWordButton.addEventListener('click', () => {
-                if (currentSpellingWord) {
+                if ('speechSynthesis' in window && currentSpellingWord) {
+                    const speech = new SpeechSynthesisUtterance(currentSpellingWord.word);
+                    window.speechSynthesis.speak(speech);
+                } else {
+                    // Fallback for browsers that don't support speech synthesis, using audio file
                     const audio = new Audio(currentSpellingWord.audio);
                     audio.play();
                 }
