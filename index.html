@@ -492,3 +492,145 @@
             let currentGrammarQuestion = null;
 
             function renderGrammarQuestion() {
+                grammarFeedbackDiv.textContent = '';
+                answerButtonsDiv.innerHTML = '';
+                const randomIndex = Math.floor(Math.random() * grammarSentences.length);
+                currentGrammarQuestion = grammarSentences[randomIndex];
+
+                const questionElement = document.createElement('p');
+                questionElement.innerHTML = currentGrammarQuestion.question;
+                questionElement.classList.add('mb-2', 'font-semibold', 'text-gray-700');
+                
+                const sentenceElement = document.createElement('p');
+                sentenceElement.textContent = currentGrammarQuestion.sentence;
+                sentenceElement.classList.add('text-4xl', 'font-bold', 'mb-4');
+                
+                grammarSentenceDiv.innerHTML = '';
+                grammarSentenceDiv.appendChild(questionElement);
+                grammarSentenceDiv.appendChild(sentenceElement);
+
+                const shuffledOptions = [...currentGrammarQuestion.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option.word;
+                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-pink-400', 'text-white', 'font-semibold', 'hover:bg-pink-500');
+                    button.addEventListener('click', () => checkGrammarAnswer(option.word));
+                    answerButtonsDiv.appendChild(button);
+                });
+            }
+
+            function checkGrammarAnswer(selectedWord) {
+                const correctWord = currentGrammarQuestion.options.find(option => option.type === currentGrammarQuestion.question.match(/\*\*(.*?)\*\*/)[1].toLowerCase()).word;
+
+                if (selectedWord === correctWord) {
+                    grammarFeedbackDiv.textContent = 'Correct! Great job!';
+                    grammarFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    grammarFeedbackDiv.textContent = `Sorry, the correct word is "${correctWord}". Try again!`;
+                    grammarFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
+                }
+
+                setTimeout(renderGrammarQuestion, 2000);
+            }
+
+            // --- French Tab Logic ---
+            const frenchWords = [
+                { english: "Cat", french: "Chat", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/cat.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
+                { english: "Dog", french: "Chien", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/dog.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
+                { english: "Book", french: "Livre", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/book.jpg", options: ["Chat", "Livre", "Pomme", "Maison"] },
+                { english: "A special gift", french: "MiMi", image: "https://imagedelivery.net/9sJ_6J9z-v153hE-T1_2pQ/9b33a598-a573-45ab-d72b-8713a26a3100/public", options: ["Chien", "Maison", "Pomme", "MiMi"] },
+                { english: "Apple", french: "Pomme", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/apple.jpg", options: ["Pomme", "Chat", "Maison", "Chien"] },
+                { english: "Car", french: "Voiture", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/car.jpg", options: ["Voiture", "Bus", "Maison", "Livre"] }
+            ];
+
+            const frenchImage = document.getElementById('french-image');
+            const englishWordDiv = document.getElementById('english-word');
+            const frenchAnswerButtonsDiv = document.getElementById('french-answer-buttons');
+            const frenchFeedbackDiv = document.getElementById('french-feedback');
+
+            let currentFrenchWord = null;
+
+            function renderFrenchQuestion() {
+                frenchFeedbackDiv.textContent = '';
+                frenchAnswerButtonsDiv.innerHTML = '';
+                const randomIndex = Math.floor(Math.random() * frenchWords.length);
+                currentFrenchWord = frenchWords[randomIndex];
+
+                frenchImage.src = currentFrenchWord.image;
+                frenchImage.alt = currentFrenchWord.english;
+                englishWordDiv.textContent = currentFrenchWord.english;
+
+                const shuffledOptions = [...currentFrenchWord.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-red-400', 'text-white', 'font-semibold', 'hover:bg-red-500');
+                    button.addEventListener('click', () => checkFrenchAnswer(option));
+                    frenchAnswerButtonsDiv.appendChild(button);
+                });
+            }
+
+            function checkFrenchAnswer(selectedWord) {
+                if (selectedWord === currentFrenchWord.french) {
+                    frenchFeedbackDiv.textContent = 'Correct! C’est un bon travail!';
+                    frenchFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    frenchFeedbackDiv.textContent = `Sorry, the correct word is "${currentFrenchWord.french}". Try again!`;
+                    frenchFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
+                }
+
+                setTimeout(renderFrenchQuestion, 2000);
+            }
+
+            // --- Phonics Tab Logic ---
+            const spellingWords = [
+                { word: 'cat', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/cat.mp3' },
+                { word: 'dog', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/dog.mp3' },
+                { word: 'book', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/book.mp3' },
+                { word: 'sun', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/sun.mp3' },
+                { word: 'jump', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/jump.mp3' },
+            ];
+
+            const sayWordButton = document.getElementById('say-word');
+            const spellingInput = document.getElementById('spelling-input');
+            const checkSpellingButton = document.getElementById('check-spelling');
+            const spellingFeedback = document.getElementById('spelling-feedback');
+            
+            let currentSpellingWord = null;
+
+            function renderSpellingChallenge() {
+                spellingInput.value = '';
+                spellingFeedback.textContent = '';
+                const randomIndex = Math.floor(Math.random() * spellingWords.length);
+                currentSpellingWord = spellingWords[randomIndex];
+            }
+
+            sayWordButton.addEventListener('click', () => {
+                if ('speechSynthesis' in window && currentSpellingWord) {
+                    const speech = new SpeechSynthesisUtterance(currentSpellingWord.word);
+                    window.speechSynthesis.speak(speech);
+                } else {
+                    const audio = new Audio(currentSpellingWord.audio);
+                    audio.play();
+                }
+            });
+
+            checkSpellingButton.addEventListener('click', () => {
+                const guessedWord = spellingInput.value.trim().toLowerCase();
+                if (guessedWord === currentSpellingWord.word) {
+                    spellingFeedback.textContent = 'Correct! Great job!';
+                    spellingFeedback.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    spellingFeedback.textContent = `Sorry, that's incorrect. Try again!`;
+                    spellingFeedback.className = 'text-red-500 font-semibold mt-4';
+                }
+                setTimeout(renderSpellingChallenge, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
