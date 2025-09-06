@@ -20,6 +20,27 @@
         .clip-path-pentagon {
             clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
         }
+        /* Drag and Drop styles */
+        .droppable {
+            border: 2px dashed #a0aec0;
+            background-color: #e2e8f0;
+            transition: all 0.2s ease-in-out;
+        }
+        .droppable.drag-over {
+            border-color: #48bb78;
+            background-color: #f0fff4;
+        }
+        .draggable {
+            cursor: grab;
+            transition: transform 0.2s ease-in-out;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+        /* Multiple choice buttons */
+        .answer-button {
+            transition: all 0.2s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center py-10">
@@ -31,7 +52,9 @@
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="plants">Plants</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="shapes">Shapes</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="math">Math</button>
-            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="phonics">Phonics</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="science">Science</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="english">English</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="french">French</button>
         </div>
 
         <div id="plants" class="tab-content active p-6 rounded-xl border-2 border-green-300 bg-green-50">
@@ -42,7 +65,6 @@
                 </div>
                 <button id="water-button" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200">Water the Plant!</button>
                 <div id="story-message" class="text-xl text-gray-700 mt-4 text-center"></div>
-                <div id="tts-message" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
@@ -58,7 +80,6 @@
                     <button id="submit-button" class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200">Submit</button>
                 </div>
                 <div id="feedback-message" class="text-xl font-semibold mt-4 text-center"></div>
-                <div id="tts-message-shapes" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
@@ -69,19 +90,58 @@
                 <input type="number" id="math-answer" placeholder="Your Answer" class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-200 text-center">
                 <button id="check-math" class="px-6 py-3 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition-all duration-200">Check Answer</button>
                 <div id="math-feedback" class="text-xl font-semibold mt-4"></div>
-                <div id="tts-message-math" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
-        <div id="phonics" class="tab-content p-6 rounded-xl border-2 border-red-300 bg-red-50">
-            <h2 class="text-3xl font-bold mb-4 text-red-800 text-center">Spelling Challenge</h2>
-            <div class="flex flex-col items-center space-y-4">
-                <div id="word-to-spell" class="text-4xl font-bold text-gray-800"></div>
-                <button id="spell-word-button" class="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all duration-200">Say the Word</button>
-                <input type="text" id="spelling-input" placeholder="Spell the word" class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200 text-center">
-                <button id="check-spelling" class="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all duration-200">Check Spelling</button>
-                <div id="spelling-feedback" class="text-xl font-semibold mt-4"></div>
-                <div id="tts-message-phonics" class="text-sm text-gray-500 mt-2"></div>
+        <div id="science" class="tab-content p-6 rounded-xl border-2 border-purple-300 bg-purple-50">
+            <h2 class="text-3xl font-bold mb-4 text-purple-800 text-center">Butterfly Life Cycle</h2>
+            <p class="text-lg text-gray-700 text-center mb-6">Drag the stages to the correct order!</p>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
+                <div id="draggable-stages" class="flex flex-wrap justify-center gap-4 p-4 bg-purple-100 rounded-lg shadow-inner w-full md:w-1/2">
+                    </div>
+                <div id="droppable-containers" class="flex flex-col items-center gap-4 w-full md:w-1/2">
+                    <div class="flex flex-col items-center">
+                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 1: Egg</span>
+                        <div data-stage="egg" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 2: Caterpillar</span>
+                        <div data-stage="caterpillar" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 3: Chrysalis</span>
+                        <div data-stage="chrysalis" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 4: Butterfly</span>
+                        <div data-stage="butterfly" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                    </div>
+                </div>
+            </div>
+            <button id="check-science" class="w-full mt-8 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition-all duration-200">Check Order</button>
+            <div id="science-feedback" class="text-xl font-semibold mt-4 text-center"></div>
+        </div>
+
+        <div id="english" class="tab-content p-6 rounded-xl border-2 border-pink-300 bg-pink-50">
+            <h2 class="text-3xl font-bold mb-4 text-pink-800 text-center">Parts of Speech</h2>
+            <p class="text-lg text-gray-700 text-center mb-6">Find the correct word to complete the sentence!</p>
+            <div class="flex flex-col items-center space-y-6">
+                <div id="grammar-sentence" class="text-2xl font-bold text-gray-800 text-center min-h-[4rem]"></div>
+                <div id="answer-buttons" class="flex flex-wrap justify-center gap-4">
+                    </div>
+                <div id="grammar-feedback" class="text-xl font-semibold mt-4 text-center"></div>
+            </div>
+        </div>
+        
+        <div id="french" class="tab-content p-6 rounded-xl border-2 border-red-300 bg-red-50">
+            <h2 class="text-3xl font-bold mb-4 text-red-800 text-center">Learn French!</h2>
+            <p class="text-lg text-gray-700 text-center mb-6">Match the word to its French translation.</p>
+            <div class="flex flex-col items-center space-y-6">
+                <img id="french-image" class="w-48 h-48 rounded-lg shadow-lg" src="" alt="French word image">
+                <div id="english-word" class="text-3xl font-bold text-gray-800"></div>
+                <div id="french-answer-buttons" class="flex flex-wrap justify-center gap-4 w-full">
+                    </div>
+                <div id="french-feedback" class="text-xl font-semibold mt-4 text-center"></div>
             </div>
         </div>
 
@@ -106,20 +166,13 @@
                 }
             }
 
-            function speakText(text, messageElement) {
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'en-US';
-                    speechSynthesis.speak(utterance);
-                    messageElement.textContent = 'Speaking...';
-                    utterance.onend = () => {
-                        messageElement.textContent = '';
-                    };
-                } else {
-                    messageElement.textContent = 'Text-to-speech not supported in this browser.';
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
                 }
             }
-            
+
             // --- Tab Handling ---
             tabs.forEach(button => {
                 button.addEventListener('click', () => {
@@ -134,7 +187,6 @@
             const waterButton = document.getElementById('water-button');
             const plantEmoji = document.getElementById('plant-emoji');
             const storyMessage = document.getElementById('story-message');
-            const ttsMessagePlants = document.getElementById('tts-message');
 
             let plantStage = 0;
             const plantStages = ['🌱', '🌿', '🪴', '🌳'];
@@ -149,11 +201,9 @@
                 if (plantStage < plantStages.length) {
                     plantEmoji.textContent = plantStages[plantStage];
                     storyMessage.textContent = stories[plantStage];
-                    speakText(stories[plantStage], ttsMessagePlants);
                     plantStage++;
                 } else {
                     storyMessage.textContent = "The plant is fully grown! Let's start a new story.";
-                    speakText(storyMessage.textContent, ttsMessagePlants);
                     plantStage = 0;
                 }
             });
@@ -178,7 +228,6 @@
             const submitButton = document.getElementById('submit-button');
             const feedbackMessage = document.getElementById('feedback-message');
             const questionText = document.getElementById('question-text');
-            const ttsMessageShapes = document.getElementById('tts-message-shapes');
 
             let currentShape = null;
 
@@ -195,8 +244,6 @@
                 feedbackMessage.textContent = '';
                 const question = `What shape is this? What is its color?`;
                 questionText.textContent = question;
-                // Speak the question directly when the user clicks the tab
-                speakText(question, ttsMessageShapes);
             }
 
             submitButton.addEventListener('click', () => {
@@ -215,7 +262,6 @@
                     feedbackMessage.className = 'text-red-500 font-semibold mt-4';
                     setTimeout(renderShape, 3000);
                 }
-                speakText(feedback, ttsMessageShapes);
             });
             
             document.querySelector('[data-tab="shapes"]').addEventListener('click', renderShape);
@@ -225,7 +271,6 @@
             const mathAnswerInput = document.getElementById('math-answer');
             const checkMathButton = document.getElementById('check-math');
             const mathFeedback = document.getElementById('math-feedback');
-            const ttsMessageMath = document.getElementById('tts-message-math');
 
             let currentProblem = null;
             let currentOperator = '';
@@ -247,8 +292,6 @@
                 } else {
                     currentProblem = currentNum1 - currentNum2;
                 }
-                
-                speakText(`What is ${currentNum1} ${currentOperator === '+' ? 'plus' : 'minus'} ${currentNum2}?`, ttsMessageMath);
             }
 
             checkMathButton.addEventListener('click', () => {
@@ -266,64 +309,241 @@
                     mathFeedback.className = 'text-red-500 font-semibold mt-4';
                     setTimeout(generateMathProblem, 2000);
                 }
-                speakText(feedback, ttsMessageMath);
             });
             
             document.querySelector('[data-tab="math"]').addEventListener('click', generateMathProblem);
 
-            // --- Phonics Tab Logic ---
-            const words = ["cat", "dog", "sun", "hat", "bed"];
-            const wordToSpell = document.getElementById('word-to-spell');
-            const spellWordButton = document.getElementById('spell-word-button');
-            const spellingInput = document.getElementById('spelling-input');
-            const checkSpellingButton = document.getElementById('check-spelling');
-            const spellingFeedback = document.getElementById('spelling-feedback');
-            const ttsMessagePhonics = document.getElementById('tts-message-phonics');
+            // --- Science Tab Logic ---
+            const scienceStages = [
+                { name: 'egg', emoji: '🥚', image: 'https://cdn.pixabay.com/photo/2012/04/24/16/22/egg-40615_1280.png' },
+                { name: 'caterpillar', emoji: '🐛', image: 'https://cdn.pixabay.com/photo/2021/05/23/15/22/caterpillar-6276807_1280.png' },
+                { name: 'chrysalis', emoji: ' cocoon', image: 'https://cdn.pixabay.com/photo/2016/09/08/13/21/cocoon-1655167_1280.png' },
+                { name: 'butterfly', emoji: '🦋', image: 'https://cdn.pixabay.com/photo/2020/06/18/14/08/butterfly-5313936_1280.png' },
+            ];
 
-            let currentWord = '';
+            const draggableContainer = document.getElementById('draggable-stages');
+            const droppableContainers = document.querySelectorAll('.droppable');
+            const checkScienceButton = document.getElementById('check-science');
+            const scienceFeedback = document.getElementById('science-feedback');
 
-            function getRandomWord() {
-                const randomIndex = Math.floor(Math.random() * words.length);
-                return words[randomIndex];
+            function initializeDragAndDrop() {
+                draggableContainer.innerHTML = '';
+                droppableContainers.forEach(container => container.innerHTML = '');
+                scienceFeedback.textContent = '';
+
+                const stagesCopy = [...scienceStages];
+                shuffleArray(stagesCopy);
+
+                stagesCopy.forEach(stage => {
+                    const img = document.createElement('img');
+                    img.src = stage.image;
+                    img.alt = stage.name;
+                    img.classList.add('w-24', 'h-24', 'draggable');
+                    img.setAttribute('draggable', true);
+                    img.setAttribute('data-stage', stage.name);
+                    draggableContainer.appendChild(img);
+                });
             }
 
-            function startSpellingChallenge() {
-                currentWord = getRandomWord();
-                wordToSpell.textContent = 'Spell this word!';
-                spellingInput.value = '';
-                spellingFeedback.textContent = '';
-                // No longer speak automatically here, let the user click "Say the Word"
-            }
+            let draggedItem = null;
 
-            spellWordButton.addEventListener('click', () => {
-                if (currentWord) {
-                    speakText(currentWord, ttsMessagePhonics);
-                } else {
-                    // Initialize the challenge if it hasn't been started
-                    startSpellingChallenge();
-                    speakText(`Spell the word: ${currentWord}.`, ttsMessagePhonics);
+            document.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('draggable')) {
+                    draggedItem = e.target;
+                    setTimeout(() => {
+                        e.target.style.transform = 'scale(0.8)';
+                        e.target.style.opacity = '0.5';
+                    }, 0);
                 }
             });
 
-            checkSpellingButton.addEventListener('click', () => {
-                const userSpelling = spellingInput.value.trim().toLowerCase();
-                let feedback = '';
-
-                if (userSpelling === currentWord) {
-                    feedback = 'You spelled it correctly! Fantastic!';
-                    spellingFeedback.textContent = feedback;
-                    spellingFeedback.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    feedback = `Oops, that's not right. The correct spelling is ${currentWord}. Let's try again.`;
-                    spellingFeedback.textContent = feedback;
-                    spellingFeedback.className = 'text-red-500 font-semibold mt-4';
+            document.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('draggable')) {
+                    e.target.style.transform = 'scale(1)';
+                    e.target.style.opacity = '1';
+                    draggedItem = null;
                 }
-                speakText(feedback, ttsMessagePhonics);
-                setTimeout(startSpellingChallenge, 3000);
             });
-            
-            document.querySelector('[data-tab="phonics"]').addEventListener('click', startSpellingChallenge);
 
+            droppableContainers.forEach(container => {
+                container.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    container.classList.add('drag-over');
+                });
+                
+                container.addEventListener('dragleave', () => {
+                    container.classList.remove('drag-over');
+                });
+
+                container.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    container.classList.remove('drag-over');
+                    if (draggedItem && container.childElementCount === 0) {
+                        container.appendChild(draggedItem);
+                    }
+                });
+            });
+
+            checkScienceButton.addEventListener('click', () => {
+                const correctOrder = ['egg', 'caterpillar', 'chrysalis', 'butterfly'];
+                const userOrder = Array.from(droppableContainers).map(container => {
+                    return container.firstElementChild ? container.firstElementChild.getAttribute('data-stage') : null;
+                });
+
+                let isCorrect = true;
+                for (let i = 0; i < correctOrder.length; i++) {
+                    if (userOrder[i] !== correctOrder[i]) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+
+                if (isCorrect) {
+                    scienceFeedback.textContent = 'Correct! You completed the life cycle!';
+                    scienceFeedback.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    scienceFeedback.textContent = 'Not quite right. Try again!';
+                    scienceFeedback.className = 'text-red-500 font-semibold mt-4';
+                }
+            });
+
+            document.querySelector('[data-tab="science"]').addEventListener('click', initializeDragAndDrop);
+
+            // --- English Tab Logic ---
+            const grammarSentences = [
+                {
+                    sentence: "The big brown bear walked.",
+                    options: [{ word: "big", type: "adjective" }, { word: "brown", type: "adjective" }, { word: "bear", type: "noun" }, { word: "walked", type: "verb" }],
+                    question: "Which word is the **noun**?"
+                },
+                {
+                    sentence: "The dog chased the ball.",
+                    options: [{ word: "dog", type: "noun" }, { word: "chased", type: "verb" }, { word: "ball", type: "noun" }],
+                    question: "Which word is the **verb**?"
+                },
+                {
+                    sentence: "She sang a beautiful song.",
+                    options: [{ word: "sang", type: "verb" }, { word: "beautiful", type: "adjective" }, { word: "song", type: "noun" }],
+                    question: "Which word is the **adjective**?"
+                },
+                {
+                    sentence: "He quickly ran to the park.",
+                    options: [{ word: "quickly", type: "adverb" }, { word: "ran", type: "verb" }, { word: "park", type: "noun" }],
+                    question: "Which word is the **verb**?"
+                },
+                {
+                    sentence: "My new shoes are blue.",
+                    options: [{ word: "new", type: "adjective" }, { word: "shoes", type: "noun" }, { word: "blue", type: "adjective" }],
+                    question: "Which word is the **noun**?"
+                }
+            ];
+
+            const grammarSentenceDiv = document.getElementById('grammar-sentence');
+            const answerButtonsDiv = document.getElementById('answer-buttons');
+            const grammarFeedbackDiv = document.getElementById('grammar-feedback');
+
+            let currentGrammarQuestion = null;
+
+            function renderGrammarQuestion() {
+                grammarFeedbackDiv.textContent = '';
+                answerButtonsDiv.innerHTML = '';
+                const randomIndex = Math.floor(Math.random() * grammarSentences.length);
+                currentGrammarQuestion = grammarSentences[randomIndex];
+
+                // Display the question and sentence
+                const questionElement = document.createElement('p');
+                questionElement.innerHTML = currentGrammarQuestion.question;
+                questionElement.classList.add('mb-2', 'font-semibold', 'text-gray-700');
+                
+                const sentenceElement = document.createElement('p');
+                sentenceElement.textContent = currentGrammarQuestion.sentence;
+                sentenceElement.classList.add('text-4xl', 'font-bold', 'mb-4');
+                
+                grammarSentenceDiv.innerHTML = '';
+                grammarSentenceDiv.appendChild(questionElement);
+                grammarSentenceDiv.appendChild(sentenceElement);
+
+                // Shuffle and create buttons
+                const shuffledOptions = [...currentGrammarQuestion.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option.word;
+                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-pink-400', 'text-white', 'font-semibold', 'hover:bg-pink-500');
+                    button.addEventListener('click', () => checkGrammarAnswer(option.word));
+                    answerButtonsDiv.appendChild(button);
+                });
+            }
+
+            function checkGrammarAnswer(selectedWord) {
+                const correctWord = currentGrammarQuestion.options.find(option => option.type === currentGrammarQuestion.question.match(/\*\*(.*?)\*\*/)[1].toLowerCase()).word;
+
+                if (selectedWord === correctWord) {
+                    grammarFeedbackDiv.textContent = 'Correct! Great job!';
+                    grammarFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    grammarFeedbackDiv.textContent = `Sorry, the correct word is "${correctWord}". Try again!`;
+                    grammarFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
+                }
+
+                setTimeout(renderGrammarQuestion, 2000);
+            }
+
+            document.querySelector('[data-tab="english"]').addEventListener('click', renderGrammarQuestion);
+
+            // --- French Tab Logic (New) ---
+            const frenchWords = [
+                { english: "Cat", french: "Chat", image: "https://images.unsplash.com/photo-1548247425-4c6e7811-20a6-57422f2162-d9.jpeg?q=80&w=640", options: ["Chat", "Chien", "Livre", "Pomme"] },
+                { english: "Dog", french: "Chien", image: "https://images.unsplash.com/photo-158894321134-c48f2203b57d?q=80&w=640", options: ["Chat", "Chien", "Livre", "Pomme"] },
+                { english: "Book", french: "Livre", image: "https://images.unsplash.com/photo-1544947954-a3f295b927a4?q=80&w=640", options: ["Chat", "Livre", "Pomme", "Maison"] },
+                { english: "House", french: "Maison", image: "https://images.unsplash.com/photo-1580587771746-7c9c22789182?q=80&w=640", options: ["Chien", "Maison", "Pomme", "Livre"] },
+                { english: "Apple", french: "Pomme", image: "https://images.unsplash.com/photo-1580252119024-5d5d8d80f836?q=80&w=640", options: ["Pomme", "Chat", "Maison", "Chien"] },
+                { english: "Car", french: "Voiture", image: "https://images.unsplash.com/photo-1580252119024-5d5d8d80f836?q=80&w=640", options: ["Voiture", "Bus", "Maison", "Livre"] }
+            ];
+
+            const frenchImage = document.getElementById('french-image');
+            const englishWordDiv = document.getElementById('english-word');
+            const frenchAnswerButtonsDiv = document.getElementById('french-answer-buttons');
+            const frenchFeedbackDiv = document.getElementById('french-feedback');
+
+            let currentFrenchWord = null;
+
+            function renderFrenchQuestion() {
+                frenchFeedbackDiv.textContent = '';
+                frenchAnswerButtonsDiv.innerHTML = '';
+                const randomIndex = Math.floor(Math.random() * frenchWords.length);
+                currentFrenchWord = frenchWords[randomIndex];
+
+                frenchImage.src = currentFrenchWord.image;
+                frenchImage.alt = currentFrenchWord.english;
+                englishWordDiv.textContent = currentFrenchWord.english;
+
+                const shuffledOptions = [...currentFrenchWord.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-red-400', 'text-white', 'font-semibold', 'hover:bg-red-500');
+                    button.addEventListener('click', () => checkFrenchAnswer(option));
+                    frenchAnswerButtonsDiv.appendChild(button);
+                });
+            }
+
+            function checkFrenchAnswer(selectedWord) {
+                if (selectedWord === currentFrenchWord.french) {
+                    frenchFeedbackDiv.textContent = 'Correct! C’est un bon travail!';
+                    frenchFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    frenchFeedbackDiv.textContent = `Sorry, the correct word is "${currentFrenchWord.french}". Try again!`;
+                    frenchFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
+                }
+
+                setTimeout(renderFrenchQuestion, 2000);
+            }
+
+            document.querySelector('[data-tab="french"]').addEventListener('click', renderFrenchQuestion);
         });
     </script>
 </body>
