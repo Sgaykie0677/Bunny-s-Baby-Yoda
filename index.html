@@ -25,6 +25,8 @@
             border: 2px dashed #a0aec0;
             background-color: #e2e8f0;
             transition: all 0.2s ease-in-out;
+            min-width: 8rem; /* Ensure droppable area is visible */
+            min-height: 8rem; /* Ensure droppable area is visible */
         }
         .droppable.drag-over {
             border-color: #48bb78;
@@ -97,24 +99,24 @@
             <h2 class="text-3xl font-bold mb-4 text-purple-800 text-center">Butterfly Life Cycle</h2>
             <p class="text-lg text-gray-700 text-center mb-6">Drag the stages to the correct order!</p>
             <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
-                <div id="draggable-stages" class="flex flex-wrap justify-center gap-4 p-4 bg-purple-100 rounded-lg shadow-inner w-full md:w-1/2">
+                <div id="draggable-stages" class="flex flex-wrap justify-center gap-4 p-4 bg-purple-100 rounded-lg shadow-inner w-full md:w-1/2 min-h-[10rem]">
                     </div>
                 <div id="droppable-containers" class="flex flex-col items-center gap-4 w-full md:w-1/2">
                     <div class="flex flex-col items-center">
                         <span class="text-lg font-bold mb-2 text-purple-700">Stage 1: Egg</span>
-                        <div data-stage="egg" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                        <div data-stage="egg" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
                     </div>
                     <div class="flex flex-col items-center">
                         <span class="text-lg font-bold mb-2 text-purple-700">Stage 2: Caterpillar</span>
-                        <div data-stage="caterpillar" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                        <div data-stage="caterpillar" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
                     </div>
                     <div class="flex flex-col items-center">
                         <span class="text-lg font-bold mb-2 text-purple-700">Stage 3: Chrysalis</span>
-                        <div data-stage="chrysalis" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                        <div data-stage="chrysalis" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
                     </div>
                     <div class="flex flex-col items-center">
                         <span class="text-lg font-bold mb-2 text-purple-700">Stage 4: Butterfly</span>
-                        <div data-stage="butterfly" class="droppable w-32 h-32 rounded-lg flex items-center justify-center"></div>
+                        <div data-stage="butterfly" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
                     </div>
                 </div>
             </div>
@@ -135,9 +137,9 @@
         
         <div id="french" class="tab-content p-6 rounded-xl border-2 border-red-300 bg-red-50">
             <h2 class="text-3xl font-bold mb-4 text-red-800 text-center">Learn French!</h2>
-            <p class="text-lg text-gray-700 text-center mb-6">Match the word to its French translation.</p>
+            <p class="text-lg text-gray-700 text-center mb-6">What is the French word for this?</p>
             <div class="flex flex-col items-center space-y-6">
-                <img id="french-image" class="w-48 h-48 rounded-lg shadow-lg" src="" alt="French word image">
+                <img id="french-image" class="w-48 h-48 object-cover rounded-lg shadow-lg" src="" alt="French word image">
                 <div id="english-word" class="text-3xl font-bold text-gray-800"></div>
                 <div id="french-answer-buttons" class="flex flex-wrap justify-center gap-4 w-full">
                     </div>
@@ -315,10 +317,10 @@
 
             // --- Science Tab Logic ---
             const scienceStages = [
-                { name: 'egg', emoji: '🥚', image: 'https://cdn.pixabay.com/photo/2012/04/24/16/22/egg-40615_1280.png' },
-                { name: 'caterpillar', emoji: '🐛', image: 'https://cdn.pixabay.com/photo/2021/05/23/15/22/caterpillar-6276807_1280.png' },
-                { name: 'chrysalis', emoji: ' cocoon', image: 'https://cdn.pixabay.com/photo/2016/09/08/13/21/cocoon-1655167_1280.png' },
-                { name: 'butterfly', emoji: '🦋', image: 'https://cdn.pixabay.com/photo/2020/06/18/14/08/butterfly-5313936_1280.png' },
+                { name: 'egg', image: 'https://cdn.pixabay.com/photo/2012/04/24/16/22/egg-40615_1280.png' },
+                { name: 'caterpillar', image: 'https://cdn.pixabay.com/photo/2021/05/23/15/22/caterpillar-6276807_1280.png' },
+                { name: 'chrysalis', image: 'https://cdn.pixabay.com/photo/2016/09/08/13/21/cocoon-1655167_1280.png' },
+                { name: 'butterfly', image: 'https://cdn.pixabay.com/photo/2020/06/18/14/08/butterfly-5313936_1280.png' },
             ];
 
             const draggableContainer = document.getElementById('draggable-stages');
@@ -338,7 +340,7 @@
                     const img = document.createElement('img');
                     img.src = stage.image;
                     img.alt = stage.name;
-                    img.classList.add('w-24', 'h-24', 'draggable');
+                    img.classList.add('w-24', 'h-24', 'draggable', 'object-contain'); // Added object-contain
                     img.setAttribute('draggable', true);
                     img.setAttribute('data-stage', stage.name);
                     draggableContainer.appendChild(img);
@@ -379,7 +381,13 @@
                     e.preventDefault();
                     container.classList.remove('drag-over');
                     if (draggedItem && container.childElementCount === 0) {
-                        container.appendChild(draggedItem);
+                        const clonedItem = draggedItem.cloneNode(true); // Clone the image
+                        clonedItem.classList.remove('draggable'); // Remove draggable from the dropped item
+                        clonedItem.style.transform = ''; // Reset transform
+                        clonedItem.style.opacity = ''; // Reset opacity
+                        container.appendChild(clonedItem);
+                        draggedItem.remove(); // Remove the original item from the draggable container
+                        draggedItem = null;
                     }
                 });
             });
@@ -467,84 +475,4 @@
                 const shuffledOptions = [...currentGrammarQuestion.options];
                 shuffleArray(shuffledOptions);
 
-                shuffledOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option.word;
-                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-pink-400', 'text-white', 'font-semibold', 'hover:bg-pink-500');
-                    button.addEventListener('click', () => checkGrammarAnswer(option.word));
-                    answerButtonsDiv.appendChild(button);
-                });
-            }
-
-            function checkGrammarAnswer(selectedWord) {
-                const correctWord = currentGrammarQuestion.options.find(option => option.type === currentGrammarQuestion.question.match(/\*\*(.*?)\*\*/)[1].toLowerCase()).word;
-
-                if (selectedWord === correctWord) {
-                    grammarFeedbackDiv.textContent = 'Correct! Great job!';
-                    grammarFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    grammarFeedbackDiv.textContent = `Sorry, the correct word is "${correctWord}". Try again!`;
-                    grammarFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
-                }
-
-                setTimeout(renderGrammarQuestion, 2000);
-            }
-
-            document.querySelector('[data-tab="english"]').addEventListener('click', renderGrammarQuestion);
-
-            // --- French Tab Logic (New) ---
-            const frenchWords = [
-                { english: "Cat", french: "Chat", image: "https://images.unsplash.com/photo-1548247425-4c6e7811-20a6-57422f2162-d9.jpeg?q=80&w=640", options: ["Chat", "Chien", "Livre", "Pomme"] },
-                { english: "Dog", french: "Chien", image: "https://images.unsplash.com/photo-158894321134-c48f2203b57d?q=80&w=640", options: ["Chat", "Chien", "Livre", "Pomme"] },
-                { english: "Book", french: "Livre", image: "https://images.unsplash.com/photo-1544947954-a3f295b927a4?q=80&w=640", options: ["Chat", "Livre", "Pomme", "Maison"] },
-                { english: "House", french: "Maison", image: "https://images.unsplash.com/photo-1580587771746-7c9c22789182?q=80&w=640", options: ["Chien", "Maison", "Pomme", "Livre"] },
-                { english: "Apple", french: "Pomme", image: "https://images.unsplash.com/photo-1580252119024-5d5d8d80f836?q=80&w=640", options: ["Pomme", "Chat", "Maison", "Chien"] },
-                { english: "Car", french: "Voiture", image: "https://images.unsplash.com/photo-1580252119024-5d5d8d80f836?q=80&w=640", options: ["Voiture", "Bus", "Maison", "Livre"] }
-            ];
-
-            const frenchImage = document.getElementById('french-image');
-            const englishWordDiv = document.getElementById('english-word');
-            const frenchAnswerButtonsDiv = document.getElementById('french-answer-buttons');
-            const frenchFeedbackDiv = document.getElementById('french-feedback');
-
-            let currentFrenchWord = null;
-
-            function renderFrenchQuestion() {
-                frenchFeedbackDiv.textContent = '';
-                frenchAnswerButtonsDiv.innerHTML = '';
-                const randomIndex = Math.floor(Math.random() * frenchWords.length);
-                currentFrenchWord = frenchWords[randomIndex];
-
-                frenchImage.src = currentFrenchWord.image;
-                frenchImage.alt = currentFrenchWord.english;
-                englishWordDiv.textContent = currentFrenchWord.english;
-
-                const shuffledOptions = [...currentFrenchWord.options];
-                shuffleArray(shuffledOptions);
-
-                shuffledOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-red-400', 'text-white', 'font-semibold', 'hover:bg-red-500');
-                    button.addEventListener('click', () => checkFrenchAnswer(option));
-                    frenchAnswerButtonsDiv.appendChild(button);
-                });
-            }
-
-            function checkFrenchAnswer(selectedWord) {
-                if (selectedWord === currentFrenchWord.french) {
-                    frenchFeedbackDiv.textContent = 'Correct! C’est un bon travail!';
-                    frenchFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    frenchFeedbackDiv.textContent = `Sorry, the correct word is "${currentFrenchWord.french}". Try again!`;
-                    frenchFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
-                }
-
-                setTimeout(renderFrenchQuestion, 2000);
-            }
-
-            document.querySelector('[data-tab="french"]').addEventListener('click', renderFrenchQuestion);
-        });
-    </script>
-</body>
-</html>
+                shuffledOptions.forEach
