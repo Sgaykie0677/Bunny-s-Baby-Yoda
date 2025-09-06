@@ -16,58 +16,20 @@
         .tab-content.active {
             display: block;
         }
-        /* Custom CSS for the pentagon shape */
-        .clip-path-pentagon {
-            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-        }
-        /* Drag and Drop styles */
-        .droppable {
-            border: 2px dashed #a0aec0;
-            background-color: #e2e8f0;
-            transition: all 0.2s ease-in-out;
-            min-width: 8rem;
-            min-height: 8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .droppable.drag-over {
-            border-color: #48bb78;
-            background-color: #f0fff4;
-        }
-        .draggable {
-            cursor: grab;
-            transition: transform 0.2s ease-in-out;
-            object-fit: contain;
-        }
-        .draggable:active {
-            cursor: grabbing;
-        }
-        /* Multiple choice buttons */
-        .answer-button {
-            transition: all 0.2s ease-in-out;
-        }
-        /* Footer styles */
-        .footer-text {
-            color: #4a5568;
-            font-size: 0.875rem;
-            margin-top: 1rem;
-        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center py-10 flex-col">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center py-10">
 
-    <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-4xl mx-auto mb-6">
+    <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-4xl mx-auto">
         <h1 class="text-4xl font-bold text-center mb-6 text-gray-800">Learning Center</h1>
 
         <div class="flex flex-wrap justify-center gap-4 mb-6">
-            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="plants">Plants</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200 bg-gray-300 text-gray-800" data-tab="plants">Plants</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="shapes">Shapes</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="math">Math</button>
-            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="science">Science</button>
-            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="english">English</button>
-            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="french">French</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="phonics">Phonics</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="science">Science</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="french">French</button>
         </div>
 
         <div id="plants" class="tab-content active p-6 rounded-xl border-2 border-green-300 bg-green-50">
@@ -78,6 +40,7 @@
                 </div>
                 <button id="water-button" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200">Water the Plant!</button>
                 <div id="story-message" class="text-xl text-gray-700 mt-4 text-center"></div>
+                <div id="tts-message" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
@@ -85,14 +48,16 @@
             <h2 class="text-3xl font-bold mb-4 text-blue-800 text-center">Shapes Quiz</h2>
             <div class="flex flex-col items-center space-y-6">
                 <div id="shape-display" class="w-48 h-48 mx-auto flex items-center justify-center rounded-xl shadow-lg border-2 border-gray-200 bg-white">
-                    </div>
-                <div id="question-text" class="text-xl font-semibold text-gray-700"></div>
+                    <!-- Shape will be rendered here -->
+                </div>
+                <div id="question-text-shapes" class="text-xl font-semibold text-gray-700"></div>
                 <div class="space-y-4 w-full">
                     <input type="text" id="shape-input" placeholder="Enter shape name" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                     <input type="text" id="color-input" placeholder="Enter color name" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
-                    <button id="submit-button" class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200">Submit</button>
+                    <button id="submit-button-shapes" class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200">Submit</button>
                 </div>
-                <div id="feedback-message" class="text-xl font-semibold mt-4 text-center"></div>
+                <div id="feedback-message-shapes" class="text-xl font-semibold mt-4 text-center"></div>
+                <div id="tts-message-shapes" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
@@ -103,86 +68,60 @@
                 <input type="number" id="math-answer" placeholder="Your Answer" class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-200 text-center">
                 <button id="check-math" class="px-6 py-3 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition-all duration-200">Check Answer</button>
                 <div id="math-feedback" class="text-xl font-semibold mt-4"></div>
+                <div id="tts-message-math" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
-        <div id="science" class="tab-content p-6 rounded-xl border-2 border-purple-300 bg-purple-50">
-            <h2 class="text-3xl font-bold mb-4 text-purple-800 text-center">Butterfly Life Cycle</h2>
-            <p class="text-lg text-gray-700 text-center mb-6">Drag the stages to the correct order!</p>
-            <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
-                <div id="draggable-stages" class="flex flex-wrap justify-center gap-4 p-4 bg-purple-100 rounded-lg shadow-inner w-full md:w-1/2 min-h-[10rem]">
-                    </div>
-                <div id="droppable-containers" class="flex flex-col items-center gap-4 w-full md:w-1/2">
-                    <div class="flex flex-col items-center">
-                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 1: Egg</span>
-                        <div data-stage="egg" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 2: Caterpillar</span>
-                        <div data-stage="caterpillar" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 3: Chrysalis</span>
-                        <div data-stage="chrysalis" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-lg font-bold mb-2 text-purple-700">Stage 4: Butterfly</span>
-                        <div data-stage="butterfly" class="droppable w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden"></div>
-                    </div>
+        <div id="phonics" class="tab-content p-6 rounded-xl border-2 border-red-300 bg-red-50">
+            <h2 class="text-3xl font-bold mb-4 text-red-800 text-center">Spelling Challenge</h2>
+            <div class="flex flex-col items-center space-y-4">
+                <div id="word-to-spell" class="text-4xl font-bold text-gray-800"></div>
+                <button id="spell-word-button" class="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all duration-200">Say the Word</button>
+                <input type="text" id="spelling-input" placeholder="Spell the word" class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200 text-center">
+                <button id="check-spelling" class="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all duration-200">Check Spelling</button>
+                <div id="spelling-feedback" class="text-xl font-semibold mt-4"></div>
+                <div id="tts-message-phonics" class="text-sm text-gray-500 mt-2"></div>
+            </div>
+        </div>
+
+        <div id="science" class="tab-content p-6 rounded-xl border-2 border-orange-300 bg-orange-50">
+            <h2 class="text-3xl font-bold mb-4 text-orange-800 text-center">Solar System Quiz</h2>
+            <div class="flex flex-col items-center space-y-6">
+                <img id="science-image" class="w-64 h-64 object-contain rounded-lg shadow-lg" src="" alt="Science object">
+                <div id="question-text-science" class="text-xl font-semibold text-gray-700"></div>
+                <div class="space-y-4 w-full">
+                    <input type="text" id="science-input" placeholder="Enter planet name" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200">
+                    <button id="submit-science" class="w-full px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 transition-all duration-200">Submit</button>
                 </div>
-            </div>
-            <button id="check-science" class="w-full mt-8 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition-all duration-200">Check Order</button>
-            <div id="science-feedback" class="text-xl font-semibold mt-4 text-center"></div>
-        </div>
-
-        <div id="english" class="tab-content p-6 rounded-xl border-2 border-pink-300 bg-pink-50">
-            <h2 class="text-3xl font-bold mb-4 text-pink-800 text-center">Parts of Speech</h2>
-            <p class="text-lg text-gray-700 text-center mb-6">Find the correct word to complete the sentence!</p>
-            <div class="flex flex-col items-center space-y-6">
-                <div id="grammar-sentence" class="text-2xl font-bold text-gray-800 text-center min-h-[4rem]"></div>
-                <div id="answer-buttons" class="flex flex-wrap justify-center gap-4">
-                    </div>
-                <div id="grammar-feedback" class="text-xl font-semibold mt-4 text-center"></div>
-            </div>
-        </div>
-        
-        <div id="french" class="tab-content p-6 rounded-xl border-2 border-red-300 bg-red-50">
-            <h2 class="text-3xl font-bold mb-4 text-red-800 text-center">Learn French!</h2>
-            <p class="text-lg text-gray-700 text-center mb-6">What is the French word for this?</p>
-            <div class="flex flex-col items-center space-y-6">
-                <img id="french-image" class="w-48 h-48 object-cover rounded-lg shadow-lg" src="" alt="French word image">
-                <div id="english-word" class="text-3xl font-bold text-gray-800"></div>
-                <div id="french-answer-buttons" class="flex flex-wrap justify-center gap-4 w-full">
-                    </div>
-                <div id="french-feedback" class="text-xl font-semibold mt-4 text-center"></div>
+                <div id="feedback-message-science" class="text-xl font-semibold mt-4 text-center"></div>
+                <div id="tts-message-science" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
-        <div id="phonics" class="tab-content p-6 rounded-xl border-2 border-teal-300 bg-teal-50">
-            <h2 class="text-3xl font-bold mb-4 text-teal-800 text-center">Spelling Challenge</h2>
-            <p class="text-lg text-gray-700 text-center mb-6">Click the button to hear a word, then spell it!</p>
+        <div id="french" class="tab-content p-6 rounded-xl border-2 border-pink-300 bg-pink-50">
+            <h2 class="text-3xl font-bold mb-4 text-pink-800 text-center">French Vocabulary</h2>
             <div class="flex flex-col items-center space-y-6">
-                <button id="say-word" class="px-6 py-3 bg-teal-500 text-white font-semibold rounded-lg shadow-md hover:bg-teal-600 transition-all duration-200">Say the Word</button>
-                <input type="text" id="spelling-input" placeholder="Type the word here" class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200 text-center">
-                <button id="check-spelling" class="px-6 py-3 bg-teal-500 text-white font-semibold rounded-lg shadow-md hover:bg-teal-600 transition-all duration-200">Check Spelling</button>
-                <div id="spelling-feedback" class="text-xl font-semibold mt-4 text-center"></div>
+                <div id="french-image" class="w-64 h-64 flex items-center justify-center rounded-lg shadow-lg bg-white">
+                    <!-- SVG image will be rendered here -->
+                </div>
+                <div id="question-text-french" class="text-xl font-semibold text-gray-700"></div>
+                <div class="space-y-4 w-full">
+                    <input type="text" id="french-input" placeholder="Enter the French word" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200">
+                    <button id="submit-french" class="w-full px-6 py-3 bg-pink-600 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 transition-all duration-200">Submit</button>
+                </div>
+                <div id="feedback-message-french" class="text-xl font-semibold mt-4 text-center"></div>
+                <div id="tts-message-french" class="text-sm text-gray-500 mt-2"></div>
             </div>
         </div>
 
     </div>
 
-    <footer class="text-center w-full mt-8">
-        <p class="footer-text">
-            &copy; 2025 Happy Birthday with love from MiMi
-        </p>
-    </footer>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tabs = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
-            
-            // --- General Functions ---
+            const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=';
+
             function showTab(tabId) {
                 tabContents.forEach(tab => tab.classList.remove('active'));
                 tabs.forEach(tab => tab.classList.remove('bg-gray-300', 'text-gray-800'));
@@ -193,22 +132,107 @@
                 if (activeTab && activeButton) {
                     activeTab.classList.add('active');
                     activeButton.classList.add('bg-gray-300', 'text-gray-800');
-                    
-                    // Call specific initialization functions when a tab is shown
-                    if (tabId === 'plants') initializePlants();
-                    if (tabId === 'shapes') renderShape();
-                    if (tabId === 'math') generateMathProblem();
-                    if (tabId === 'science') initializeDragAndDrop();
-                    if (tabId === 'english') renderGrammarQuestion();
-                    if (tabId === 'french') renderFrenchQuestion();
-                    if (tabId === 'phonics') renderSpellingChallenge();
                 }
             }
 
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
+            async function speakText(text, messageElement) {
+                if (!text) {
+                    messageElement.textContent = 'Error: No text to speak.';
+                    return;
+                }
+                messageElement.textContent = 'Loading...';
+                
+                try {
+                    const payload = {
+                        contents: [{ parts: [{ text: text }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Puck" } } }
+                        },
+                        model: "gemini-2.5-flash-preview-tts"
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                        const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        
+                        const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: sampleRate });
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+                        
+                        const audio = new Audio(audioUrl);
+                        audio.play();
+                        messageElement.textContent = '';
+                    } else {
+                        throw new Error('Invalid audio data received from API.');
+                    }
+                } catch (error) {
+                    console.error('Speech generation failed:', error);
+                    messageElement.textContent = 'Error generating speech. Please try again.';
+                }
+            }
+
+            function base64ToArrayBuffer(base64) {
+                const binaryString = atob(base64);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                return bytes.buffer;
+            }
+
+            function pcmToWav(pcmData, sampleRate) {
+                const numChannels = 1;
+                const bytesPerSample = 2;
+                const byteRate = sampleRate * numChannels * bytesPerSample;
+                const blockAlign = numChannels * bytesPerSample;
+                const dataSize = pcmData.length * bytesPerSample;
+
+                const buffer = new ArrayBuffer(44 + dataSize);
+                const view = new DataView(buffer);
+
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 36 + dataSize, true);
+                writeString(view, 8, 'WAVE');
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, numChannels, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, byteRate, true);
+                view.setUint16(32, blockAlign, true);
+                view.setUint16(34, bytesPerSample * 8, true);
+                writeString(view, 36, 'data');
+                view.setUint32(40, dataSize, true);
+
+                let offset = 44;
+                for (let i = 0; i < pcmData.length; i++) {
+                    view.setInt16(offset, pcmData[i], true);
+                    offset += bytesPerSample;
+                }
+                return new Blob([view], { type: 'audio/wav' });
+            }
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
                 }
             }
 
@@ -226,7 +250,8 @@
             const waterButton = document.getElementById('water-button');
             const plantEmoji = document.getElementById('plant-emoji');
             const storyMessage = document.getElementById('story-message');
-            
+            const ttsMessagePlants = document.getElementById('tts-message');
+
             let plantStage = 0;
             const plantStages = ['🌱', '🌿', '🪴', '🌳'];
             const stories = [
@@ -236,21 +261,16 @@
                 'Finally, the plant became a mighty tree! It was big and strong, providing shade and a home for little birds. It was very happy.'
             ];
 
-            function initializePlants() {
-                plantStage = 0;
-                plantEmoji.textContent = plantStages[plantStage];
-                storyMessage.textContent = stories[plantStage];
-            }
-
             waterButton.addEventListener('click', () => {
-                if (plantStage < plantStages.length - 1) {
-                    plantStage++;
+                if (plantStage < plantStages.length) {
                     plantEmoji.textContent = plantStages[plantStage];
                     storyMessage.textContent = stories[plantStage];
+                    speakText(stories[plantStage], ttsMessagePlants);
+                    plantStage++;
                 } else {
                     storyMessage.textContent = "The plant is fully grown! Let's start a new story.";
-                    // Optionally reset the state after the last stage
-                    setTimeout(initializePlants, 3000);
+                    speakText(storyMessage.textContent, ttsMessagePlants);
+                    plantStage = 0;
                 }
             });
 
@@ -261,19 +281,20 @@
                 { name: 'circle', color: 'blue', render: `<div class="w-32 h-32 bg-blue-500 rounded-full"></div>` },
                 { name: 'star', color: 'yellow', render: `<svg class="w-40 h-40" viewBox="0 0 51 48" fill="#facc15" stroke="none"><path d="M25,1.5c-0.6,0-1.2,0.4-1.5,0.9L16.2,16l-14.7,2.1c-0.6,0.1-1.2,0.5-1.5,1.1c-0.3,0.6-0.3,1.3,0,1.9l10.7,10.4l-2.5,14.6c-0.1,0.6,0.1,1.2,0.6,1.6c0.5,0.4,1.1,0.5,1.7,0.3l13.1-6.9l13.1,6.9c0.6,0.2,1.2,0.1,1.7-0.3c0.5-0.4,0.7-1,0.6-1.6l-2.5-14.6l10.7-10.4c0.3-0.6,0.3-1.3,0-1.9c-0.3-0.6-0.9-1-1.5-1.1L34.2,16l-7.3-13.6c-0.3-0.5-0.9-0.9-1.5-0.9z"/></svg>` },
                 { name: 'heart', color: 'pink', render: `<svg class="w-40 h-40" viewBox="0 0 24 24" fill="#ec4899" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>` },
-                { name: 'hexagon', color: 'purple', render: `<div class="relative w-32 h-16 bg-purple-600 before:content-[''] before:absolute before:top-[-2.75rem] before:left-0 before:w-0 before:h-0 before:border-l-[2rem] before:border-r-[2rem] before:border-b-[2rem] before:border-l-transparent before:border-r-transparent before:border-b-purple-600 after:content-[''] after:absolute after:bottom-[-2.75rem] after:left-0 after:w-0 after:h-0 after:border-t-[2rem] after:border-l-[2rem] after:border-r-[2rem] after:border-t-purple-600 after:border-l-transparent after:border-r-transparent"></div>` },
+                { name: 'hexagon', color: 'purple', render: `<div class="w-32 h-16 bg-purple-600 relative after:content-[''] after:absolute after:bottom-full after:left-0 after:w-0 after:h-0 after:border-b-[1.5rem] after:border-l-[2rem] after:border-r-[2rem] after:border-solid after:border-l-transparent after:border-r-transparent after:border-b-purple-600 before:content-[''] before:absolute before:top-full before:left-0 before:w-0 before:h-0 before:border-t-[1.5rem] before:border-l-[2rem] before:border-r-[2rem] before:border-solid before:border-l-transparent before:border-r-transparent before:border-t-purple-600"></div>` },
                 { name: 'diamond', color: 'cyan', render: `<div class="w-24 h-24 transform rotate-45 bg-cyan-400"></div>` },
-                { name: 'pentagon', color: 'orange', render: `<div class="relative w-28 h-28 clip-path-pentagon bg-orange-400"></div>` },
+                { name: 'pentagon', color: 'orange', render: `<div class="relative w-28 h-28 clip-path-polygon-[50%_0%,_100%_38%,_82%_100%,_18%_100%,_0%_38%] bg-orange-400"></div>` },
                 { name: 'parallelogram', color: 'lime', render: `<div class="w-48 h-24 transform skew-x-[-20deg] bg-lime-400"></div>` },
-                { name: 'cross', color: 'teal', render: `<div class="w-24 h-8 bg-teal-400 relative before:content-[''] before:absolute before:inset-x-0 before:h-24 before:w-8 before:bg-teal-400 before:left-1/2 before:transform before:-translate-x-1/2"></div>` },
+                { name: 'cross', color: 'teal', render: `<div class="w-24 h-24 relative bg-teal-400 before:content-[''] before:absolute before:inset-x-0 before:h-24 before:bg-teal-400 after:content-[''] after:absolute after:inset-y-0 after:w-24 after:bg-teal-400"></div>` },
             ];
 
             const shapeDisplay = document.getElementById('shape-display');
             const shapeInput = document.getElementById('shape-input');
             const colorInput = document.getElementById('color-input');
-            const submitButton = document.getElementById('submit-button');
-            const feedbackMessage = document.getElementById('feedback-message');
-            const questionText = document.getElementById('question-text');
+            const submitButtonShapes = document.getElementById('submit-button-shapes');
+            const feedbackMessageShapes = document.getElementById('feedback-message-shapes');
+            const questionTextShapes = document.getElementById('question-text-shapes');
+            const ttsMessageShapes = document.getElementById('tts-message-shapes');
 
             let currentShape = null;
 
@@ -287,55 +308,53 @@
                 shapeDisplay.innerHTML = currentShape.render;
                 shapeInput.value = '';
                 colorInput.value = '';
-                feedbackMessage.textContent = '';
+                feedbackMessageShapes.textContent = '';
                 const question = `What shape is this? What is its color?`;
-                questionText.textContent = question;
+                questionTextShapes.textContent = question;
+                speakText(question, ttsMessageShapes);
             }
 
-            submitButton.addEventListener('click', () => {
+            submitButtonShapes.addEventListener('click', () => {
                 const guessedShape = shapeInput.value.trim().toLowerCase();
                 const guessedColor = colorInput.value.trim().toLowerCase();
                 let feedback = '';
 
                 if (guessedShape === currentShape.name && guessedColor === currentShape.color) {
                     feedback = 'Correct! Great job!';
-                    feedbackMessage.textContent = feedback;
-                    feedbackMessage.className = 'text-green-500 font-semibold mt-4';
-                    setTimeout(renderShape, 3000);
+                    feedbackMessageShapes.textContent = feedback;
+                    feedbackMessageShapes.className = 'text-green-500 font-semibold mt-4';
                 } else {
                     feedback = `Sorry, that's not quite right. The shape was a ${currentShape.name} and the color was ${currentShape.color}. Try again!`;
-                    feedbackMessage.textContent = feedback;
-                    feedbackMessage.className = 'text-red-500 font-semibold mt-4';
-                    setTimeout(renderShape, 3000);
+                    feedbackMessageShapes.textContent = feedback;
+                    feedbackMessageShapes.className = 'text-red-500 font-semibold mt-4';
                 }
+                speakText(feedback, ttsMessageShapes);
+                setTimeout(renderShape, 3000);
             });
             
+            document.querySelector('[data-tab="shapes"]').addEventListener('click', renderShape);
+
             // --- Math Tab Logic ---
             const mathProblem = document.getElementById('math-problem');
             const mathAnswerInput = document.getElementById('math-answer');
             const checkMathButton = document.getElementById('check-math');
             const mathFeedback = document.getElementById('math-feedback');
+            const ttsMessageMath = document.getElementById('tts-message-math');
 
             let currentProblem = null;
-            let currentOperator = '';
-            let currentNum1 = 0;
-            let currentNum2 = 0;
 
             function generateMathProblem() {
-                currentNum1 = Math.floor(Math.random() * 10) + 1;
-                currentNum2 = Math.floor(Math.random() * 10) + 1;
-                currentOperator = Math.random() < 0.5 ? '+' : '-';
-
-                const problemString = `${currentNum1} ${currentOperator} ${currentNum2}`;
-                mathProblem.textContent = problemString;
+                const num1 = Math.floor(Math.random() * 10) + 1;
+                const num2 = Math.floor(Math.random() * 10) + 1;
+                const operator = Math.random() < 0.5 ? '+' : '-';
+                const problem = `${num1} ${operator} ${num2}`;
+                
+                mathProblem.textContent = problem;
                 mathAnswerInput.value = '';
                 mathFeedback.textContent = '';
+                currentProblem = eval(problem);
                 
-                if (currentOperator === '+') {
-                    currentProblem = currentNum1 + currentNum2;
-                } else {
-                    currentProblem = currentNum1 - currentNum2;
-                }
+                speakText(`What is ${num1} ${operator === '+' ? 'plus' : 'minus'} ${num2}?`, ttsMessageMath);
             }
 
             checkMathButton.addEventListener('click', () => {
@@ -348,288 +367,161 @@
                     mathFeedback.className = 'text-green-500 font-semibold mt-4';
                     setTimeout(generateMathProblem, 2000);
                 } else {
-                    feedback = `Sorry, the correct answer is ${currentProblem}. Let's try another one.`;
+                    feedback = `Sorry, the correct answer is ${currentProblem}. Please try again.`;
                     mathFeedback.textContent = feedback;
                     mathFeedback.className = 'text-red-500 font-semibold mt-4';
-                    setTimeout(generateMathProblem, 2000);
                 }
+                speakText(feedback, ttsMessageMath);
             });
             
-            // --- Science Tab Logic ---
-            const scienceStages = [
-                { name: 'egg', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/egg.png' },
-                { name: 'caterpillar', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/caterpillar.png' },
-                { name: 'chrysalis', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/chrysalis.png' },
-                { name: 'butterfly', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/butterfly.png' },
-            ];
-
-            const draggableContainer = document.getElementById('draggable-stages');
-            const droppableContainers = document.querySelectorAll('.droppable');
-            const checkScienceButton = document.getElementById('check-science');
-            const scienceFeedback = document.getElementById('science-feedback');
-
-            function initializeDragAndDrop() {
-                draggableContainer.innerHTML = '';
-                droppableContainers.forEach(container => container.innerHTML = '');
-                scienceFeedback.textContent = '';
-
-                const stagesCopy = [...scienceStages];
-                shuffleArray(stagesCopy);
-
-                stagesCopy.forEach(stage => {
-                    const img = document.createElement('img');
-                    img.src = stage.image;
-                    img.alt = stage.name;
-                    img.classList.add('w-24', 'h-24', 'draggable', 'object-contain');
-                    img.setAttribute('draggable', true);
-                    img.setAttribute('data-stage', stage.name);
-                    draggableContainer.appendChild(img);
-                });
-            }
-
-            let draggedItem = null;
-
-            document.addEventListener('dragstart', (e) => {
-                if (e.target.classList.contains('draggable')) {
-                    draggedItem = e.target;
-                    setTimeout(() => {
-                        e.target.style.transform = 'scale(0.8)';
-                        e.target.style.opacity = '0.5';
-                    }, 0);
-                }
-            });
-
-            document.addEventListener('dragend', (e) => {
-                if (e.target.classList.contains('draggable')) {
-                    e.target.style.transform = 'scale(1)';
-                    e.target.style.opacity = '1';
-                    draggedItem = null;
-                }
-            });
-
-            droppableContainers.forEach(container => {
-                container.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    container.classList.add('drag-over');
-                });
-                
-                container.addEventListener('dragleave', () => {
-                    container.classList.remove('drag-over');
-                });
-
-                container.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    container.classList.remove('drag-over');
-                    if (draggedItem && container.childElementCount === 0) {
-                        const clonedItem = draggedItem.cloneNode(true);
-                        clonedItem.classList.remove('draggable');
-                        clonedItem.style.transform = '';
-                        clonedItem.style.opacity = '';
-                        container.appendChild(clonedItem);
-                        draggedItem.remove();
-                        draggedItem = null;
-                    }
-                });
-            });
-
-            checkScienceButton.addEventListener('click', () => {
-                const correctOrder = ['egg', 'caterpillar', 'chrysalis', 'butterfly'];
-                const userOrder = Array.from(droppableContainers).map(container => {
-                    return container.firstElementChild ? container.firstElementChild.getAttribute('data-stage') : null;
-                });
-
-                let isCorrect = true;
-                for (let i = 0; i < correctOrder.length; i++) {
-                    if (userOrder[i] !== correctOrder[i]) {
-                        isCorrect = false;
-                        break;
-                    }
-                }
-
-                if (isCorrect) {
-                    scienceFeedback.textContent = 'Correct! You completed the life cycle!';
-                    scienceFeedback.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    scienceFeedback.textContent = 'Not quite right. Try again!';
-                    scienceFeedback.className = 'text-red-500 font-semibold mt-4';
-                }
-                setTimeout(initializeDragAndDrop, 3000);
-            });
-            
-            // --- English Tab Logic ---
-            const grammarSentences = [
-                {
-                    sentence: "The big brown bear walked.",
-                    options: [{ word: "big", type: "adjective" }, { word: "brown", type: "adjective" }, { word: "bear", type: "noun" }, { word: "walked", type: "verb" }],
-                    question: "Which word is the **noun**?"
-                },
-                {
-                    sentence: "The dog chased the ball.",
-                    options: [{ word: "dog", type: "noun" }, { word: "chased", type: "verb" }, { word: "ball", type: "noun" }],
-                    question: "Which word is the **verb**?"
-                },
-                {
-                    sentence: "She sang a beautiful song.",
-                    options: [{ word: "sang", type: "verb" }, { word: "beautiful", type: "adjective" }, { word: "song", type: "noun" }],
-                    question: "Which word is the **adjective**?"
-                },
-                {
-                    sentence: "He quickly ran to the park.",
-                    options: [{ word: "quickly", type: "adverb" }, { word: "ran", type: "verb" }, { word: "park", type: "noun" }],
-                    question: "Which word is the **verb**?"
-                },
-                {
-                    sentence: "My new shoes are blue.",
-                    options: [{ word: "new", type: "adjective" }, { word: "shoes", type: "noun" }, { word: "blue", type: "adjective" }],
-                    question: "Which word is the **noun**?"
-                }
-            ];
-
-            const grammarSentenceDiv = document.getElementById('grammar-sentence');
-            const answerButtonsDiv = document.getElementById('answer-buttons');
-            const grammarFeedbackDiv = document.getElementById('grammar-feedback');
-
-            let currentGrammarQuestion = null;
-
-            function renderGrammarQuestion() {
-                grammarFeedbackDiv.textContent = '';
-                answerButtonsDiv.innerHTML = '';
-                const randomIndex = Math.floor(Math.random() * grammarSentences.length);
-                currentGrammarQuestion = grammarSentences[randomIndex];
-
-                const questionElement = document.createElement('p');
-                questionElement.innerHTML = currentGrammarQuestion.question;
-                questionElement.classList.add('mb-2', 'font-semibold', 'text-gray-700');
-                
-                const sentenceElement = document.createElement('p');
-                sentenceElement.textContent = currentGrammarQuestion.sentence;
-                sentenceElement.classList.add('text-4xl', 'font-bold', 'mb-4');
-                
-                grammarSentenceDiv.innerHTML = '';
-                grammarSentenceDiv.appendChild(questionElement);
-                grammarSentenceDiv.appendChild(sentenceElement);
-
-                const shuffledOptions = [...currentGrammarQuestion.options];
-                shuffleArray(shuffledOptions);
-
-                shuffledOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option.word;
-                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-pink-400', 'text-white', 'font-semibold', 'hover:bg-pink-500');
-                    button.addEventListener('click', () => checkGrammarAnswer(option.word));
-                    answerButtonsDiv.appendChild(button);
-                });
-            }
-
-            function checkGrammarAnswer(selectedWord) {
-                const correctWord = currentGrammarQuestion.options.find(option => option.type === currentGrammarQuestion.question.match(/\*\*(.*?)\*\*/)[1].toLowerCase()).word;
-
-                if (selectedWord === correctWord) {
-                    grammarFeedbackDiv.textContent = 'Correct! Great job!';
-                    grammarFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    grammarFeedbackDiv.textContent = `Sorry, the correct word is "${correctWord}". Try again!`;
-                    grammarFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
-                }
-
-                setTimeout(renderGrammarQuestion, 2000);
-            }
-
-            // --- French Tab Logic ---
-            const frenchWords = [
-                { english: "Cat", french: "Chat", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/cat.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
-                { english: "Dog", french: "Chien", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/dog.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
-                { english: "Book", french: "Livre", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/book.jpg", options: ["Chat", "Livre", "Pomme", "Maison"] },
-                { english: "A special gift", french: "MiMi", image: "https://imagedelivery.net/9sJ_6J9z-v153hE-T1_2pQ/9b33a598-a573-45ab-d72b-8713a26a3100/public", options: ["Chien", "Maison", "Pomme", "MiMi"] },
-                { english: "Apple", french: "Pomme", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/apple.jpg", options: ["Pomme", "Chat", "Maison", "Chien"] },
-                { english: "Car", french: "Voiture", image: "https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/car.jpg", options: ["Voiture", "Bus", "Maison", "Livre"] }
-            ];
-
-            const frenchImage = document.getElementById('french-image');
-            const englishWordDiv = document.getElementById('english-word');
-            const frenchAnswerButtonsDiv = document.getElementById('french-answer-buttons');
-            const frenchFeedbackDiv = document.getElementById('french-feedback');
-
-            let currentFrenchWord = null;
-
-            function renderFrenchQuestion() {
-                frenchFeedbackDiv.textContent = '';
-                frenchAnswerButtonsDiv.innerHTML = '';
-                const randomIndex = Math.floor(Math.random() * frenchWords.length);
-                currentFrenchWord = frenchWords[randomIndex];
-
-                frenchImage.src = currentFrenchWord.image;
-                frenchImage.alt = currentFrenchWord.english;
-                englishWordDiv.textContent = currentFrenchWord.english;
-
-                const shuffledOptions = [...currentFrenchWord.options];
-                shuffleArray(shuffledOptions);
-
-                shuffledOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-red-400', 'text-white', 'font-semibold', 'hover:bg-red-500');
-                    button.addEventListener('click', () => checkFrenchAnswer(option));
-                    frenchAnswerButtonsDiv.appendChild(button);
-                });
-            }
-
-            function checkFrenchAnswer(selectedWord) {
-                if (selectedWord === currentFrenchWord.french) {
-                    frenchFeedbackDiv.textContent = 'Correct! C’est un bon travail!';
-                    frenchFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    frenchFeedbackDiv.textContent = `Sorry, the correct word is "${currentFrenchWord.french}". Try again!`;
-                    frenchFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
-                }
-
-                setTimeout(renderFrenchQuestion, 2000);
-            }
+            document.querySelector('[data-tab="math"]').addEventListener('click', generateMathProblem);
 
             // --- Phonics Tab Logic ---
-            const spellingWords = [
-                { word: 'cat', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/cat.mp3' },
-                { word: 'dog', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/dog.mp3' },
-                { word: 'book', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/book.mp3' },
-                { word: 'sun', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/sun.mp3' },
-                { word: 'jump', audio: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/jump.mp3' },
-            ];
-
-            const sayWordButton = document.getElementById('say-word');
+            const words = ["cat", "dog", "sun", "hat", "bed"];
+            const wordToSpell = document.getElementById('word-to-spell');
+            const spellWordButton = document.getElementById('spell-word-button');
             const spellingInput = document.getElementById('spelling-input');
             const checkSpellingButton = document.getElementById('check-spelling');
             const spellingFeedback = document.getElementById('spelling-feedback');
-            
-            let currentSpellingWord = null;
+            const ttsMessagePhonics = document.getElementById('tts-message-phonics');
 
-            function renderSpellingChallenge() {
-                spellingInput.value = '';
-                spellingFeedback.textContent = '';
-                const randomIndex = Math.floor(Math.random() * spellingWords.length);
-                currentSpellingWord = spellingWords[randomIndex];
+            let currentWord = '';
+
+            function getRandomWord() {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                return words[randomIndex];
             }
 
-            sayWordButton.addEventListener('click', () => {
-                if ('speechSynthesis' in window && currentSpellingWord) {
-                    const speech = new SpeechSynthesisUtterance(currentSpellingWord.word);
-                    window.speechSynthesis.speak(speech);
-                } else {
-                    const audio = new Audio(currentSpellingWord.audio);
-                    audio.play();
+            function startSpellingChallenge() {
+                currentWord = getRandomWord();
+                wordToSpell.textContent = 'Spell this word!';
+                spellingInput.value = '';
+                spellingFeedback.textContent = '';
+                speakText(`Spell the word: ${currentWord}.`, ttsMessagePhonics);
+            }
+
+            spellWordButton.addEventListener('click', () => {
+                if (currentWord) {
+                    speakText(currentWord, ttsMessagePhonics);
                 }
             });
 
             checkSpellingButton.addEventListener('click', () => {
-                const guessedWord = spellingInput.value.trim().toLowerCase();
-                if (guessedWord === currentSpellingWord.word) {
-                    spellingFeedback.textContent = 'Correct! Great job!';
+                const userSpelling = spellingInput.value.trim().toLowerCase();
+                let feedback = '';
+
+                if (userSpelling === currentWord) {
+                    feedback = 'You spelled it correctly! Fantastic!';
+                    spellingFeedback.textContent = feedback;
                     spellingFeedback.className = 'text-green-500 font-semibold mt-4';
                 } else {
-                    spellingFeedback.textContent = `Sorry, that's incorrect. Try again!`;
+                    feedback = `Oops, that's not right. The correct spelling is ${currentWord}. Try again!`;
+                    spellingFeedback.textContent = feedback;
                     spellingFeedback.className = 'text-red-500 font-semibold mt-4';
                 }
-                setTimeout(renderSpellingChallenge, 2000);
+                speakText(feedback, ttsMessagePhonics);
+                setTimeout(startSpellingChallenge, 3000);
             });
+            
+            document.querySelector('[data-tab="phonics"]').addEventListener('click', startSpellingChallenge);
+
+            // --- Science Tab Logic ---
+            const scienceImage = document.getElementById('science-image');
+            const scienceInput = document.getElementById('science-input');
+            const submitScienceButton = document.getElementById('submit-science');
+            const feedbackMessageScience = document.getElementById('feedback-message-science');
+            const questionTextScience = document.getElementById('question-text-science');
+            const ttsMessageScience = document.getElementById('tts-message-science');
+
+            const planets = [
+                { name: 'mercury', image: 'https://placehold.co/256x256/f79220/ffffff?text=Mercury' },
+                { name: 'venus', image: 'https://placehold.co/256x256/f7c16c/000000?text=Venus' },
+                { name: 'earth', image: 'https://placehold.co/256x256/4a90e2/ffffff?text=Earth' },
+                { name: 'mars', image: 'https://placehold.co/256x256/c0522c/ffffff?text=Mars' },
+                { name: 'jupiter', image: 'https://placehold.co/256x256/d1a774/000000?text=Jupiter' },
+                { name: 'saturn', image: 'https://placehold.co/256x256/d1c990/000000?text=Saturn' },
+                { name: 'uranus', image: 'https://placehold.co/256x256/c1e8e8/000000?text=Uranus' },
+                { name: 'neptune', image: 'https://placehold.co/256x256/4169e1/ffffff?text=Neptune' }
+            ];
+
+            let currentPlanet = null;
+
+            function renderScienceQuestion() {
+                const randomIndex = Math.floor(Math.random() * planets.length);
+                currentPlanet = planets[randomIndex];
+                scienceImage.src = currentPlanet.image;
+                scienceInput.value = '';
+                feedbackMessageScience.textContent = '';
+                const question = "Can you name this planet?";
+                questionTextScience.textContent = question;
+                speakText(question, ttsMessageScience);
+            }
+
+            submitScienceButton.addEventListener('click', () => {
+                const guessedPlanet = scienceInput.value.trim().toLowerCase();
+                let feedback = '';
+
+                if (guessedPlanet === currentPlanet.name) {
+                    feedback = "That's correct! Way to go!";
+                    feedbackMessageScience.textContent = feedback;
+                    feedbackMessageScience.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    feedback = `Sorry, that's not right. The correct answer is ${currentPlanet.name}. Try again!`;
+                    feedbackMessageScience.textContent = feedback;
+                    feedbackMessageScience.className = 'text-red-500 font-semibold mt-4';
+                }
+                speakText(feedback, ttsMessageScience);
+                setTimeout(renderScienceQuestion, 3000);
+            });
+
+            document.querySelector('[data-tab="science"]').addEventListener('click', renderScienceQuestion);
+
+            // --- French Tab Logic ---
+            const frenchImageContainer = document.getElementById('french-image');
+            const frenchInput = document.getElementById('french-input');
+            const submitFrenchButton = document.getElementById('submit-french');
+            const feedbackMessageFrench = document.getElementById('feedback-message-french');
+            const questionTextFrench = document.getElementById('question-text-french');
+            const ttsMessageFrench = document.getElementById('tts-message-french');
+
+            const frenchWords = [
+                { english: 'dog', french: 'chien', svg: `<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M22.5 12c0 5.8-4.7 10.5-10.5 10.5S1.5 17.8 1.5 12 6.2 1.5 12 1.5 22.5 6.2 22.5 12z"/><path d="M12 15c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/><path d="M12 9c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z" opacity=".2"/><path d="M12 18c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z" opacity=".2"/><path d="M12 6c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z" opacity=".2"/><path d="M15 12c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z" opacity=".2"/></svg>` },
+                { english: 'car', french: 'voiture', svg: `<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-car"><path d="M16 17a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h8a2 2 0 012 2v10z"/><path d="M12 17h10M12 7h10"/></svg>` },
+                { english: 'house', french: 'maison', svg: `<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>` }
+            ];
+
+            let currentFrenchWord = null;
+
+            function renderFrenchQuestion() {
+                const randomIndex = Math.floor(Math.random() * frenchWords.length);
+                currentFrenchWord = frenchWords[randomIndex];
+                frenchImageContainer.innerHTML = currentFrenchWord.svg;
+                frenchInput.value = '';
+                feedbackMessageFrench.textContent = '';
+                const question = `What is the French word for this?`;
+                questionTextFrench.textContent = question;
+                speakText(question, ttsMessageFrench);
+            }
+
+            submitFrenchButton.addEventListener('click', () => {
+                const guessedWord = frenchInput.value.trim().toLowerCase();
+                let feedback = '';
+
+                if (guessedWord === currentFrenchWord.french) {
+                    feedback = `C'est correct! That's right!`;
+                    feedbackMessageFrench.textContent = feedback;
+                    feedbackMessageFrench.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    feedback = `Désolé, that's not quite right. The correct word is ${currentFrenchWord.french}. Try again!`;
+                    feedbackMessageFrench.textContent = feedback;
+                    feedbackMessageFrench.className = 'text-red-500 font-semibold mt-4';
+                }
+                speakText(feedback, ttsMessageFrench);
+                setTimeout(renderFrenchQuestion, 3000);
+            });
+
+            document.querySelector('[data-tab="french"]').addEventListener('click', renderFrenchQuestion);
+
         });
     </script>
 </body>
