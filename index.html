@@ -67,6 +67,7 @@
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="science">Science</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="english">English</button>
             <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="french">French</button>
+            <button class="tab-button px-6 py-2 rounded-full font-semibold transition-all duration-200" data-tab="phonics">Phonics</button>
         </div>
 
         <div id="plants" class="tab-content active p-6 rounded-xl border-2 border-green-300 bg-green-50">
@@ -157,6 +158,17 @@
             </div>
         </div>
 
+        <div id="phonics" class="tab-content p-6 rounded-xl border-2 border-teal-300 bg-teal-50">
+            <h2 class="text-3xl font-bold mb-4 text-teal-800 text-center">Spelling Challenge</h2>
+            <p class="text-lg text-gray-700 text-center mb-6">Click the button to hear a word, then spell it!</p>
+            <div class="flex flex-col items-center space-y-6">
+                <button id="say-word" class="px-6 py-3 bg-teal-500 text-white font-semibold rounded-lg shadow-md hover:bg-teal-600 transition-all duration-200">Say the Word</button>
+                <input type="text" id="spelling-input" placeholder="Type the word here" class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200 text-center">
+                <button id="check-spelling" class="px-6 py-3 bg-teal-500 text-white font-semibold rounded-lg shadow-md hover:bg-teal-600 transition-all duration-200">Check Spelling</button>
+                <div id="spelling-feedback" class="text-xl font-semibold mt-4 text-center"></div>
+            </div>
+        </div>
+
     </div>
 
     <footer class="text-center w-full mt-8">
@@ -188,6 +200,7 @@
                     if (tabId === 'science') initializeDragAndDrop();
                     if (tabId === 'english') renderGrammarQuestion();
                     if (tabId === 'french') renderFrenchQuestion();
+                    if (tabId === 'phonics') renderSpellingChallenge();
                 }
             }
 
@@ -567,6 +580,48 @@
 
                 setTimeout(renderFrenchQuestion, 2000);
             }
+
+            // --- Phonics Tab Logic ---
+            const spellingWords = [
+                { word: 'cat', audio: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_924259b3d0.mp3?filename=cat-14073.mp3' },
+                { word: 'dog', audio: 'https://cdn.pixabay.com/download/audio/2022/10/24/audio_b2f90a6e8b.mp3?filename=dog-48066.mp3' },
+                { word: 'book', audio: 'https://cdn.pixabay.com/download/audio/2022/01/21/audio_1e9915e730.mp3?filename=book-8692.mp3' },
+                { word: 'sun', audio: 'https://cdn.pixabay.com/download/audio/2022/03/11/audio_4a68988770.mp3?filename=sun-5226.mp3' },
+                { word: 'jump', audio: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_f5eb3a1b32.mp3?filename=jump-5223.mp3' },
+            ];
+
+            const sayWordButton = document.getElementById('say-word');
+            const spellingInput = document.getElementById('spelling-input');
+            const checkSpellingButton = document.getElementById('check-spelling');
+            const spellingFeedback = document.getElementById('spelling-feedback');
+            
+            let currentSpellingWord = null;
+
+            function renderSpellingChallenge() {
+                spellingInput.value = '';
+                spellingFeedback.textContent = '';
+                const randomIndex = Math.floor(Math.random() * spellingWords.length);
+                currentSpellingWord = spellingWords[randomIndex];
+            }
+
+            sayWordButton.addEventListener('click', () => {
+                if (currentSpellingWord) {
+                    const audio = new Audio(currentSpellingWord.audio);
+                    audio.play();
+                }
+            });
+
+            checkSpellingButton.addEventListener('click', () => {
+                const guessedWord = spellingInput.value.trim().toLowerCase();
+                if (guessedWord === currentSpellingWord.word) {
+                    spellingFeedback.textContent = 'Correct! Great job!';
+                    spellingFeedback.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    spellingFeedback.textContent = `Sorry, that's incorrect. Try again!`;
+                    spellingFeedback.className = 'text-red-500 font-semibold mt-4';
+                }
+                setTimeout(renderSpellingChallenge, 2000);
+            });
         });
     </script>
 </body>
