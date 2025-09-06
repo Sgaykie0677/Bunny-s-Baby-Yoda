@@ -25,8 +25,8 @@
             border: 2px dashed #a0aec0;
             background-color: #e2e8f0;
             transition: all 0.2s ease-in-out;
-            min-width: 8rem; /* Ensure droppable area is visible */
-            min-height: 8rem; /* Ensure droppable area is visible */
+            min-width: 8rem;
+            min-height: 8rem;
         }
         .droppable.drag-over {
             border-color: #48bb78;
@@ -340,7 +340,7 @@
                     const img = document.createElement('img');
                     img.src = stage.image;
                     img.alt = stage.name;
-                    img.classList.add('w-24', 'h-24', 'draggable', 'object-contain'); // Added object-contain
+                    img.classList.add('w-24', 'h-24', 'draggable', 'object-contain');
                     img.setAttribute('draggable', true);
                     img.setAttribute('data-stage', stage.name);
                     draggableContainer.appendChild(img);
@@ -381,12 +381,12 @@
                     e.preventDefault();
                     container.classList.remove('drag-over');
                     if (draggedItem && container.childElementCount === 0) {
-                        const clonedItem = draggedItem.cloneNode(true); // Clone the image
-                        clonedItem.classList.remove('draggable'); // Remove draggable from the dropped item
-                        clonedItem.style.transform = ''; // Reset transform
-                        clonedItem.style.opacity = ''; // Reset opacity
+                        const clonedItem = draggedItem.cloneNode(true);
+                        clonedItem.classList.remove('draggable');
+                        clonedItem.style.transform = '';
+                        clonedItem.style.opacity = '';
                         container.appendChild(clonedItem);
-                        draggedItem.remove(); // Remove the original item from the draggable container
+                        draggedItem.remove();
                         draggedItem = null;
                     }
                 });
@@ -475,4 +475,84 @@
                 const shuffledOptions = [...currentGrammarQuestion.options];
                 shuffleArray(shuffledOptions);
 
-                shuffledOptions.forEach
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option.word;
+                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-pink-400', 'text-white', 'font-semibold', 'hover:bg-pink-500');
+                    button.addEventListener('click', () => checkGrammarAnswer(option.word));
+                    answerButtonsDiv.appendChild(button);
+                });
+            }
+
+            function checkGrammarAnswer(selectedWord) {
+                const correctWord = currentGrammarQuestion.options.find(option => option.type === currentGrammarQuestion.question.match(/\*\*(.*?)\*\*/)[1].toLowerCase()).word;
+
+                if (selectedWord === correctWord) {
+                    grammarFeedbackDiv.textContent = 'Correct! Great job!';
+                    grammarFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    grammarFeedbackDiv.textContent = `Sorry, the correct word is "${correctWord}". Try again!`;
+                    grammarFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
+                }
+
+                setTimeout(renderGrammarQuestion, 2000);
+            }
+
+            document.querySelector('[data-tab="english"]').addEventListener('click', renderGrammarQuestion);
+
+            // --- French Tab Logic ---
+            const frenchWords = [
+                { english: "Cat", french: "Chat", image: "https://cdn.pixabay.com/photo/2014/03/29/09/17/cat-300572_1280.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
+                { english: "Dog", french: "Chien", image: "https://cdn.pixabay.com/photo/2016/12/13/05/15/dog-1903328_1280.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
+                { english: "Book", french: "Livre", image: "https://cdn.pixabay.com/photo/2016/09/24/09/41/book-1692291_1280.jpg", options: ["Chat", "Livre", "Pomme", "Maison"] },
+                { english: "House", french: "Maison", image: "https://cdn.pixabay.com/photo/2017/08/29/18/39/house-2694186_1280.jpg", options: ["Chien", "Maison", "Pomme", "Livre"] },
+                { english: "Apple", french: "Pomme", image: "https://cdn.pixabay.com/photo/2017/09/26/13/20/apple-2789128_1280.jpg", options: ["Pomme", "Chat", "Maison", "Chien"] },
+                { english: "Car", french: "Voiture", image: "https://cdn.pixabay.com/photo/2016/11/18/16/06/car-1836069_1280.jpg", options: ["Voiture", "Bus", "Maison", "Livre"] }
+            ];
+
+            const frenchImage = document.getElementById('french-image');
+            const englishWordDiv = document.getElementById('english-word');
+            const frenchAnswerButtonsDiv = document.getElementById('french-answer-buttons');
+            const frenchFeedbackDiv = document.getElementById('french-feedback');
+
+            let currentFrenchWord = null;
+
+            function renderFrenchQuestion() {
+                frenchFeedbackDiv.textContent = '';
+                frenchAnswerButtonsDiv.innerHTML = '';
+                const randomIndex = Math.floor(Math.random() * frenchWords.length);
+                currentFrenchWord = frenchWords[randomIndex];
+
+                frenchImage.src = currentFrenchWord.image;
+                frenchImage.alt = currentFrenchWord.english;
+                englishWordDiv.textContent = currentFrenchWord.english;
+
+                const shuffledOptions = [...currentFrenchWord.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-red-400', 'text-white', 'font-semibold', 'hover:bg-red-500');
+                    button.addEventListener('click', () => checkFrenchAnswer(option));
+                    frenchAnswerButtonsDiv.appendChild(button);
+                });
+            }
+
+            function checkFrenchAnswer(selectedWord) {
+                if (selectedWord === currentFrenchWord.french) {
+                    frenchFeedbackDiv.textContent = 'Correct! C’est un bon travail!';
+                    frenchFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
+                } else {
+                    frenchFeedbackDiv.textContent = `Sorry, the correct word is "${currentFrenchWord.french}". Try again!`;
+                    frenchFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
+                }
+
+                setTimeout(renderFrenchQuestion, 2000);
+            }
+
+            document.querySelector('[data-tab="french"]').addEventListener('click', renderFrenchQuestion);
+        });
+    </script>
+</body>
+</html>
