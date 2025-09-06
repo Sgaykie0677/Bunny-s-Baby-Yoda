@@ -27,9 +27,9 @@
             transition: all 0.2s ease-in-out;
             min-width: 8rem;
             min-height: 8rem;
-            display: flex; /* Added for centering dropped image */
-            align-items: center; /* Added for centering dropped image */
-            justify-content: center; /* Added for centering dropped image */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .droppable.drag-over {
             border-color: #48bb78;
@@ -38,7 +38,7 @@
         .draggable {
             cursor: grab;
             transition: transform 0.2s ease-in-out;
-            object-fit: contain; /* Ensure images fit within their boxes */
+            object-fit: contain;
         }
         .draggable:active {
             cursor: grabbing;
@@ -49,9 +49,9 @@
         }
         /* Footer styles */
         .footer-text {
-            color: #4a5568; /* a nice gray color */
-            font-size: 0.875rem; /* small text size */
-            margin-top: 1rem; /* some space above the footer */
+            color: #4a5568;
+            font-size: 0.875rem;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -219,7 +219,7 @@
             });
 
             // Initial tab display
-            showTab('plants'); // Ensure initial tab loads correctly with its content
+            showTab('plants');
 
             // --- Plants Tab Logic ---
             const waterButton = document.getElementById('water-button');
@@ -242,8 +242,8 @@
                     plantStage++;
                 } else {
                     storyMessage.textContent = "The plant is fully grown! Let's start a new story.";
-                    plantStage = 0; // Reset for a new cycle
-                    plantEmoji.textContent = plantStages[plantStage]; // Show initial stage
+                    plantStage = 0;
+                    plantEmoji.textContent = plantStages[plantStage];
                 }
             });
 
@@ -350,10 +350,10 @@
             
             // --- Science Tab Logic ---
             const scienceStages = [
-                { name: 'egg', image: 'https://cdn.pixabay.com/photo/2012/04/24/16/22/egg-40615_1280.png' },
-                { name: 'caterpillar', image: 'https://cdn.pixabay.com/photo/2021/05/23/15/22/caterpillar-6276807_1280.png' },
-                { name: 'chrysalis', image: 'https://cdn.pixabay.com/photo/2016/09/08/13/21/cocoon-1655167_1280.png' },
-                { name: 'butterfly', image: 'https://cdn.pixabay.com/photo/2020/06/18/14/08/butterfly-5313936_1280.png' },
+                { name: 'egg', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/egg.png' },
+                { name: 'caterpillar', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/caterpillar.png' },
+                { name: 'chrysalis', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/chrysalis.png' },
+                { name: 'butterfly', image: 'https://cdn.jsdelivr.net/gh/google/learning-center-assets@main/butterfly.png' },
             ];
 
             const draggableContainer = document.getElementById('draggable-stages');
@@ -415,11 +415,11 @@
                     container.classList.remove('drag-over');
                     if (draggedItem && container.childElementCount === 0) {
                         const clonedItem = draggedItem.cloneNode(true);
-                        clonedItem.classList.remove('draggable'); // Dropped item should no longer be draggable
-                        clonedItem.style.transform = ''; // Reset transform
-                        clonedItem.style.opacity = ''; // Reset opacity
+                        clonedItem.classList.remove('draggable');
+                        clonedItem.style.transform = '';
+                        clonedItem.style.opacity = '';
                         container.appendChild(clonedItem);
-                        draggedItem.remove(); // Remove the original item from the draggable container
+                        draggedItem.remove();
                         draggedItem = null;
                     }
                 });
@@ -446,7 +446,7 @@
                     scienceFeedback.textContent = 'Not quite right. Try again!';
                     scienceFeedback.className = 'text-red-500 font-semibold mt-4';
                 }
-                setTimeout(initializeDragAndDrop, 3000); // Reinitialize for next round
+                setTimeout(initializeDragAndDrop, 3000);
             });
             
             // --- English Tab Logic ---
@@ -490,7 +490,6 @@
                 const randomIndex = Math.floor(Math.random() * grammarSentences.length);
                 currentGrammarQuestion = grammarSentences[randomIndex];
 
-                // Display the question and sentence
                 const questionElement = document.createElement('p');
                 questionElement.innerHTML = currentGrammarQuestion.question;
                 questionElement.classList.add('mb-2', 'font-semibold', 'text-gray-700');
@@ -503,130 +502,8 @@
                 grammarSentenceDiv.appendChild(questionElement);
                 grammarSentenceDiv.appendChild(sentenceElement);
 
-                // Shuffle and create buttons
                 const shuffledOptions = [...currentGrammarQuestion.options];
                 shuffleArray(shuffledOptions);
 
                 shuffledOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option.word;
-                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-pink-400', 'text-white', 'font-semibold', 'hover:bg-pink-500');
-                    button.addEventListener('click', () => checkGrammarAnswer(option.word));
-                    answerButtonsDiv.appendChild(button);
-                });
-            }
-
-            function checkGrammarAnswer(selectedWord) {
-                const correctWord = currentGrammarQuestion.options.find(option => option.type === currentGrammarQuestion.question.match(/\*\*(.*?)\*\*/)[1].toLowerCase()).word;
-
-                if (selectedWord === correctWord) {
-                    grammarFeedbackDiv.textContent = 'Correct! Great job!';
-                    grammarFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    grammarFeedbackDiv.textContent = `Sorry, the correct word is "${correctWord}". Try again!`;
-                    grammarFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
-                }
-
-                setTimeout(renderGrammarQuestion, 2000);
-            }
-
-            // --- French Tab Logic ---
-            const frenchWords = [
-                { english: "Cat", french: "Chat", image: "https://cdn.pixabay.com/photo/2014/03/29/09/17/cat-300572_1280.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
-                { english: "Dog", french: "Chien", image: "https://cdn.pixabay.com/photo/2016/12/13/05/15/dog-1903328_1280.jpg", options: ["Chat", "Chien", "Livre", "Pomme"] },
-                { english: "Book", french: "Livre", image: "https://cdn.pixabay.com/photo/2016/09/24/09/41/book-1692291_1280.jpg", options: ["Chat", "Livre", "Pomme", "Maison"] },
-                { english: "A special gift", french: "MiMi", image: "https://imagedelivery.net/9sJ_6J9z-v153hE-T1_2pQ/9b33a598-a573-45ab-d72b-8713a26a3100/public", options: ["Chien", "Maison", "Pomme", "MiMi"] },
-                { english: "Apple", french: "Pomme", image: "https://cdn.pixabay.com/photo/2017/09/26/13/20/apple-2789128_1280.jpg", options: ["Pomme", "Chat", "Maison", "Chien"] },
-                { english: "Car", french: "Voiture", image: "https://cdn.pixabay.com/photo/2016/11/18/16/06/car-1836069_1280.jpg", options: ["Voiture", "Bus", "Maison", "Livre"] }
-            ];
-
-            const frenchImage = document.getElementById('french-image');
-            const englishWordDiv = document.getElementById('english-word');
-            const frenchAnswerButtonsDiv = document.getElementById('french-answer-buttons');
-            const frenchFeedbackDiv = document.getElementById('french-feedback');
-
-            let currentFrenchWord = null;
-
-            function renderFrenchQuestion() {
-                frenchFeedbackDiv.textContent = '';
-                frenchAnswerButtonsDiv.innerHTML = '';
-                const randomIndex = Math.floor(Math.random() * frenchWords.length);
-                currentFrenchWord = frenchWords[randomIndex];
-
-                frenchImage.src = currentFrenchWord.image;
-                frenchImage.alt = currentFrenchWord.english;
-                englishWordDiv.textContent = currentFrenchWord.english;
-
-                const shuffledOptions = [...currentFrenchWord.options];
-                shuffleArray(shuffledOptions);
-
-                shuffledOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.classList.add('answer-button', 'px-6', 'py-3', 'rounded-lg', 'bg-red-400', 'text-white', 'font-semibold', 'hover:bg-red-500');
-                    button.addEventListener('click', () => checkFrenchAnswer(option));
-                    frenchAnswerButtonsDiv.appendChild(button);
-                });
-            }
-
-            function checkFrenchAnswer(selectedWord) {
-                if (selectedWord === currentFrenchWord.french) {
-                    frenchFeedbackDiv.textContent = 'Correct! C’est un bon travail!';
-                    frenchFeedbackDiv.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    frenchFeedbackDiv.textContent = `Sorry, the correct word is "${currentFrenchWord.french}". Try again!`;
-                    frenchFeedbackDiv.className = 'text-red-500 font-semibold mt-4';
-                }
-
-                setTimeout(renderFrenchQuestion, 2000);
-            }
-
-            // --- Phonics Tab Logic ---
-            const spellingWords = [
-                { word: 'cat', audio: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_924259b3d0.mp3?filename=cat-14073.mp3' },
-                { word: 'dog', audio: 'https://cdn.pixabay.com/download/audio/2022/10/24/audio_b2f90a6e8b.mp3?filename=dog-48066.mp3' },
-                { word: 'book', audio: 'https://cdn.pixabay.com/download/audio/2022/01/21/audio_1e9915e730.mp3?filename=book-8692.mp3' },
-                { word: 'sun', audio: 'https://cdn.pixabay.com/download/audio/2022/03/11/audio_4a68988770.mp3?filename=sun-5226.mp3' },
-                { word: 'jump', audio: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_f5eb3a1b32.mp3?filename=jump-5223.mp3' },
-            ];
-
-            const sayWordButton = document.getElementById('say-word');
-            const spellingInput = document.getElementById('spelling-input');
-            const checkSpellingButton = document.getElementById('check-spelling');
-            const spellingFeedback = document.getElementById('spelling-feedback');
-            
-            let currentSpellingWord = null;
-
-            function renderSpellingChallenge() {
-                spellingInput.value = '';
-                spellingFeedback.textContent = '';
-                const randomIndex = Math.floor(Math.random() * spellingWords.length);
-                currentSpellingWord = spellingWords[randomIndex];
-            }
-
-            sayWordButton.addEventListener('click', () => {
-                if ('speechSynthesis' in window && currentSpellingWord) {
-                    const speech = new SpeechSynthesisUtterance(currentSpellingWord.word);
-                    window.speechSynthesis.speak(speech);
-                } else {
-                    // Fallback for browsers that don't support speech synthesis, using audio file
-                    const audio = new Audio(currentSpellingWord.audio);
-                    audio.play();
-                }
-            });
-
-            checkSpellingButton.addEventListener('click', () => {
-                const guessedWord = spellingInput.value.trim().toLowerCase();
-                if (guessedWord === currentSpellingWord.word) {
-                    spellingFeedback.textContent = 'Correct! Great job!';
-                    spellingFeedback.className = 'text-green-500 font-semibold mt-4';
-                } else {
-                    spellingFeedback.textContent = `Sorry, that's incorrect. Try again!`;
-                    spellingFeedback.className = 'text-red-500 font-semibold mt-4';
-                }
-                setTimeout(renderSpellingChallenge, 2000);
-            });
-        });
-    </script>
-</body>
-</html>
+                    const button = document.
