@@ -195,6 +195,7 @@
                     activeButton.classList.add('bg-gray-300', 'text-gray-800');
                     
                     // Call specific initialization functions when a tab is shown
+                    if (tabId === 'plants') initializePlants();
                     if (tabId === 'shapes') renderShape();
                     if (tabId === 'math') generateMathProblem();
                     if (tabId === 'science') initializeDragAndDrop();
@@ -225,7 +226,7 @@
             const waterButton = document.getElementById('water-button');
             const plantEmoji = document.getElementById('plant-emoji');
             const storyMessage = document.getElementById('story-message');
-
+            
             let plantStage = 0;
             const plantStages = ['🌱', '🌿', '🪴', '🌳'];
             const stories = [
@@ -235,15 +236,21 @@
                 'Finally, the plant became a mighty tree! It was big and strong, providing shade and a home for little birds. It was very happy.'
             ];
 
+            function initializePlants() {
+                plantStage = 0;
+                plantEmoji.textContent = plantStages[plantStage];
+                storyMessage.textContent = stories[plantStage];
+            }
+
             waterButton.addEventListener('click', () => {
-                if (plantStage < plantStages.length) {
+                if (plantStage < plantStages.length - 1) {
+                    plantStage++;
                     plantEmoji.textContent = plantStages[plantStage];
                     storyMessage.textContent = stories[plantStage];
-                    plantStage++;
                 } else {
                     storyMessage.textContent = "The plant is fully grown! Let's start a new story.";
-                    plantStage = 0;
-                    plantEmoji.textContent = plantStages[plantStage];
+                    // Optionally reset the state after the last stage
+                    setTimeout(initializePlants, 3000);
                 }
             });
 
@@ -485,25 +492,3 @@
             let currentGrammarQuestion = null;
 
             function renderGrammarQuestion() {
-                grammarFeedbackDiv.textContent = '';
-                answerButtonsDiv.innerHTML = '';
-                const randomIndex = Math.floor(Math.random() * grammarSentences.length);
-                currentGrammarQuestion = grammarSentences[randomIndex];
-
-                const questionElement = document.createElement('p');
-                questionElement.innerHTML = currentGrammarQuestion.question;
-                questionElement.classList.add('mb-2', 'font-semibold', 'text-gray-700');
-                
-                const sentenceElement = document.createElement('p');
-                sentenceElement.textContent = currentGrammarQuestion.sentence;
-                sentenceElement.classList.add('text-4xl', 'font-bold', 'mb-4');
-                
-                grammarSentenceDiv.innerHTML = '';
-                grammarSentenceDiv.appendChild(questionElement);
-                grammarSentenceDiv.appendChild(sentenceElement);
-
-                const shuffledOptions = [...currentGrammarQuestion.options];
-                shuffleArray(shuffledOptions);
-
-                shuffledOptions.forEach(option => {
-                    const button = document.
